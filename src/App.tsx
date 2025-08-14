@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ChatInterface } from "./components/chat/ChatInterface";
 import { AdminDashboard } from "./components/admin/AdminDashboard";
+import { AdminAuth } from "./components/auth/AdminAuth";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -17,7 +18,11 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<ChatInterface />} />
-          <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/admin" element={
+            <AdminAuth>
+              <AdminDashboard />
+            </AdminAuth>
+          } />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
