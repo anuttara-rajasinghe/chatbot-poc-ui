@@ -52,9 +52,11 @@ export const APP_CONFIG = {
   
   // API endpoints (customizable for white-labeling)
   API: {
-    CHAT_ENDPOINT: "/api/chat",
-    SESSION_ENDPOINT: "/api/session",
-    UPLOAD_ENDPOINT: "/api/upload",
+    BASE_URL: "http://localhost:8000", // Your FastAPI server URL
+    CHAT_ENDPOINT: "/api/v1/chat",
+    SESSION_ENDPOINT: "/api/v1/chat/generate-session",
+    UPLOAD_ENDPOINT: "/api/v1/chat/upload-data",
+    BATCH_UPLOAD_ENDPOINT: "/api/v1/chat/upload-batch-data",
     DOCUMENTS_ENDPOINT: "/api/documents",
   },
   

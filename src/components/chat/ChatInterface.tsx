@@ -161,11 +161,20 @@ export const ChatInterface = () => {
     setIsLoading(true);
 
     try {
-      // Here you would call your Python API endpoint
-      // For now, we'll simulate a response
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      const assistantResponse = `I received your message: "${input}". This is a simulated response. Please connect your Python API endpoint to replace this.`;
+      // Call your Python API endpoint
+      const response = await fetch(`${APP_CONFIG.API.BASE_URL}/api/v1/chat/?user_query=${encodeURIComponent(input)}&user_id=${encodeURIComponent('temp-user')}&session_id=${encodeURIComponent(sessionId)}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`API request failed: ${response.status}`);
+      }
+
+      const data = await response.json();
+      const assistantResponse = data.response || "I apologize, but I couldn't generate a response at this time.";
 
       const assistantMessage = {
         session_id: sessionId,
