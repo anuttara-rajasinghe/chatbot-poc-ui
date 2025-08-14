@@ -60,7 +60,7 @@ export const APP_CONFIG = {
   
   // Theme settings
   THEME: {
-    DEFAULT_MODE: "dark",
+    DEFAULT_MODE: "light",
     ENABLE_THEME_TOGGLE: true,
     PRIMARY_COLOR: "262 83% 58%", // Purple from the image
     SECONDARY_COLOR: "220 84% 65%", // Blue from the image
@@ -78,7 +78,7 @@ export const APP_CONFIG = {
   
   // Powered by branding (customizable for white-labeling)
   BRANDING: {
-    POWERED_BY: "ARIA",
+    POWERED_BY: "ALTRIUM",
     SHOW_POWERED_BY: true,
     LOGO_URL: null, // Custom logo URL
     FAVICON_URL: null, // Custom favicon URL
