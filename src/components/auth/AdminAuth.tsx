@@ -186,12 +186,12 @@ export const AdminAuth = ({ children }: AdminAuthProps) => {
     <div className="relative">
       {children}
       {/* Sign out button overlay */}
-      <div className="fixed top-4 right-4 z-50">
+      <div className="fixed top-6 right-6 z-50">
         <Button
           variant="outline"
           size="sm"
           onClick={handleSignOut}
-          className="bg-background border-border"
+          className="admin-card border-border text-foreground hover:bg-accent hover:text-accent-foreground transition-smooth"
         >
           Sign Out
         </Button>
