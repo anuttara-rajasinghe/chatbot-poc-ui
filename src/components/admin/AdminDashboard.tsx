@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useAuth0 } from '@auth0/auth0-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -11,12 +12,15 @@ import {
   FileText, 
   Download,
   Settings,
-  ArrowLeft
+  ArrowLeft,
+  LogOut,
+  User
 } from "lucide-react";
 import { APP_CONFIG } from "@/config/app-config";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "react-router-dom";
+import AdminLogin from '../auth/AdminLogin';
 
 interface Document {
   id: string;
@@ -30,6 +34,7 @@ interface Document {
 }
 
 export const AdminDashboard = () => {
+  const { isAuthenticated, isLoading, logout, user } = useAuth0();
   const [documents, setDocuments] = useState<Document[]>([]);
   const [filteredDocuments, setFilteredDocuments] = useState<Document[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -37,12 +42,36 @@ export const AdminDashboard = () => {
   const { toast } = useToast();
 
   useEffect(() => {
-    loadDocuments();
-  }, []);
+    if (isAuthenticated) {
+      loadDocuments();
+    }
+  }, [isAuthenticated]);
 
   useEffect(() => {
     filterDocuments();
   }, [documents, searchQuery]);
+
+  const handleLogout = () => {
+    logout({ 
+      logoutParams: {
+        returnTo: window.location.origin 
+      }
+    });
+  };
+
+  // Show loading spinner while Auth0 is initializing
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
+  // Show login page if not authenticated
+  if (!isAuthenticated) {
+    return <AdminLogin />;
+  }
 
   const loadDocuments = async () => {
     const { data, error } = await supabase
@@ -197,8 +226,8 @@ export const AdminDashboard = () => {
   return (
     <div className="min-h-screen admin-background">
       <div className="container mx-auto p-6">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-8">
+        {/* Header with user info and logout */}
+        <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-4">
             <Link to="/">
               <Button variant="outline" size="sm">
@@ -206,14 +235,35 @@ export const AdminDashboard = () => {
                 Back to Chat
               </Button>
             </Link>
-            <div>
-              <h1 className="text-3xl font-bold gradient-text">
-                {APP_CONFIG.ADMIN.TITLE}
-              </h1>
-              <p className="text-muted-foreground mt-1">
-                {APP_CONFIG.ADMIN.DOCUMENTS_TITLE}
-              </p>
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-gradient-to-br from-primary to-secondary rounded-full flex items-center justify-center">
+                <User className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <h2 className="text-lg font-semibold">{user?.name || user?.email}</h2>
+                <p className="text-sm text-muted-foreground">Admin</p>
+              </div>
             </div>
+          </div>
+          <Button
+            variant="outline"
+            onClick={handleLogout}
+            className="flex items-center gap-2"
+          >
+            <LogOut className="w-4 h-4" />
+            {APP_CONFIG.ADMIN.LOGOUT_BUTTON}
+          </Button>
+        </div>
+
+        {/* Title and Upload Section */}
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <h1 className="text-3xl font-bold gradient-text">
+              {APP_CONFIG.ADMIN.TITLE}
+            </h1>
+            <p className="text-muted-foreground mt-1">
+              {APP_CONFIG.ADMIN.DOCUMENTS_TITLE}
+            </p>
           </div>
           
           <div className="flex items-center gap-2">
@@ -324,6 +374,13 @@ export const AdminDashboard = () => {
             )}
           </CardContent>
         </Card>
+
+        {/* Powered by footer */}
+        {APP_CONFIG.BRANDING.SHOW_POWERED_BY && (
+          <div className="text-center mt-8 text-sm text-muted-foreground">
+            Powered by {APP_CONFIG.BRANDING.POWERED_BY}
+          </div>
+        )}
       </div>
     </div>
   );
