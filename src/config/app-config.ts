@@ -61,7 +61,7 @@ export const APP_CONFIG = {
   // Theme settings
   THEME: {
     DEFAULT_MODE: "light",
-    ENABLE_THEME_TOGGLE: true,
+    ENABLE_THEME_TOGGLE: false,
     PRIMARY_COLOR: "262 83% 58%", // Purple from the image
     SECONDARY_COLOR: "220 84% 65%", // Blue from the image
   },
