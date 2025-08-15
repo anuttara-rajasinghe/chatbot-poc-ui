@@ -165,6 +165,38 @@ export const AdminAuth = ({ children }: AdminAuthProps) => {
               </Button>
               <Button
                 type="button"
+                variant="secondary"
+                className="w-full mb-2"
+                onClick={async () => {
+                  setIsLoading(true);
+                  try {
+                    const { error } = await supabase.auth.signInWithPassword({
+                      email: "demo@admin.com",
+                      password: "demo123456",
+                    });
+                    
+                    if (error) throw error;
+                    
+                    toast({
+                      title: "Demo Login Successful",
+                      description: "Signed in with demo account",
+                    });
+                  } catch (error: any) {
+                    toast({
+                      title: "Demo Login Failed",
+                      description: "Demo account may not exist yet",
+                      variant: "destructive",
+                    });
+                  } finally {
+                    setIsLoading(false);
+                  }
+                }}
+                disabled={isLoading}
+              >
+                🚀 Demo Login
+              </Button>
+              <Button
+                type="button"
                 variant="ghost"
                 className="w-full text-sm"
                 onClick={() => setIsSignUp(!isSignUp)}
