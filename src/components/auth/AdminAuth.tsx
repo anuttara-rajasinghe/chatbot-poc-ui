@@ -218,7 +218,7 @@ export const AdminAuth = ({ children }: AdminAuthProps) => {
     <div className="relative">
       {children}
       {/* Sign out button overlay */}
-      <div className="fixed top-4 right-4 z-40">
+      <div className="fixed top-20 right-4 z-40">
         <Button
           variant="outline"
           size="sm"
