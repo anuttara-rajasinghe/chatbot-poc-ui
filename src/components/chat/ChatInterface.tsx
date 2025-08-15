@@ -214,13 +214,30 @@ export const ChatInterface = () => {
   };
 
   const deleteSession = async (sessionId: string) => {
-    const { error } = await supabase
+    // First delete all messages in the session
+    const { error: messagesError } = await supabase
+      .from("chat_messages")
+      .delete()
+      .eq("session_id", sessionId);
+
+    if (messagesError) {
+      console.error("Error deleting messages:", messagesError);
+      toast({
+        title: "Error",
+        description: "Failed to delete chat messages",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Then delete the session
+    const { error: sessionError } = await supabase
       .from("chat_sessions")
       .delete()
       .eq("id", sessionId);
 
-    if (error) {
-      console.error("Error deleting session:", error);
+    if (sessionError) {
+      console.error("Error deleting session:", sessionError);
       toast({
         title: "Error",
         description: "Failed to delete chat session",
@@ -229,12 +246,15 @@ export const ChatInterface = () => {
       return;
     }
 
+    // Update UI state
     if (currentSessionId === sessionId) {
       setCurrentSessionId(null);
       setMessages([]);
     }
 
-    loadSessions();
+    // Remove the deleted session from the sessions list immediately
+    setSessions(prev => prev.filter(session => session.id !== sessionId));
+    
     toast({
       title: "Success",
       description: "Chat session deleted",
